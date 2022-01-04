@@ -3,8 +3,8 @@ $(document).ready(function () {
     $('.dragItem').on('click keyup', function (e) {
         const key = e.which || e.keyCode;
         if((key === 13 || key === 32) || e.type === "click"){
-            e.stopPropagation();
-            if ($(this).attr('aria-pressed') == 'true') {
+            e.stopPropagation()
+            if ($(this).attr('aria-disabled') == 'true') {
                 clearSelection();
                 return;
             }
@@ -16,12 +16,10 @@ $(document).ready(function () {
                 });
             
             selectedButton = $(this).attr('id');
-            console.log('selectedButton ', selectedButton, $('#' + selectedButton).text())
-            setLiveRegion($('#' + selectedButton).text() + ' grabbed.');
+            setLiveRegion($('#' + selectedButton).text() + ' grabbed');
             $(this).attr({
                 'aria-disabled': false,
                 'draggable': false,
-                'aria-grabbed':true,
                 'aria-pressed':true,
                 'tabindex': 0
             })
@@ -34,7 +32,7 @@ $(document).ready(function () {
     $('.dropAreaWrapper .dropArea, .dragContainer').on('click keyup', function (e) {
         const key = e.which || e.keyCode;
         if((key === 13 || key === 32) || e.type === "click"){
-            if ($('.dragItem[aria-pressed=true]')) {
+            if ($('.dragItem[aria-disabled=true]')) {
                 if ($(this).children('.dragItem').length > 0) {
                     $('.dragItemsWrapper').append($(this).children('.dragItem:first'));
                 }
@@ -50,12 +48,11 @@ $(document).ready(function () {
                 $('#' + selectedButton).focus();
                 $('#' + selectedButton).attr({
                     'aria-pressed': false,
-                    'aria-grabbed': false,
                     'draggable': true
                 });
 
                 toggleSubmitBtn();
-                setLiveRegion($('#' + selectedButton).text() + ' dropped to ' + $(this).attr('aria-label'));
+                setLiveRegion($('#' + selectedButton).text() + ' dropped to ' + $(this).find('span.sr-only').text());
 
                 selectedButton = null;
             }
@@ -64,7 +61,7 @@ $(document).ready(function () {
 
     $(document).on('keyup', function (e) {
         if (e.key === 'Escape') {
-            if ($('.dragItems[aria-pressed=true]')) {
+            if ($('.dragItems[aria-disabled=true]')) {
                 clearSelection();
                 return;
             }
@@ -125,7 +122,6 @@ $(document).ready(function () {
         $('.dragItem').attr({
             'aria-disabled': false,
             'draggable': true,
-            'aria-grabbed':false,
             'aria-pressed':false,
             'tabindex': 0
         })

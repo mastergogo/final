@@ -96,49 +96,49 @@ body {
   border-color: transparent; 
 }
 
-#dropArea0 {
+#dropArea1 {
   left: 201px;
   top: 15px;
   width: 175px;
   height: 79px;
 }
 
-#dropArea1 {
+#dropArea2 {
   right: 24px;
   top: 15px;
   height: 79px;
   width: 192px;
 }
 
-#dropArea2 {
+#dropArea3 {
   right: 94px;
   top: 112px;
   width: 122px;
   height: 102px;
 }
 
- #dropArea3 {
+ #dropArea4 {
   right: 24px;
   top: 232px;
   width: 145px;
   height: 62px;
 }
 
-#dropArea4 {
+#dropArea5 {
   right: 94px;
   top: 312px;
   width: 73px;
   height: 57px;
 }
 
- #dropArea5 {
+ #dropArea6 {
   left: 195px;
   bottom: 28px;
   width: 162px;
   height: 65px;
 }
 
- #dropArea6 {
+ #dropArea7 {
   left: 77px;
   bottom: 25px;
   width: 63px;
