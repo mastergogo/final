@@ -1,9 +1,22 @@
 $(document).ready(function () {
-    var selectedButton;
+    var selectedButton, selectedDropArea;
     $('.dragItem').on('click keyup', function (e) {
         const key = e.which || e.keyCode;
-        if((key === 13 || key === 32) || e.type === "click"){
-            e.stopPropagation()
+        if((key === 13 || key === 32) || e.type === 'click'){
+            e.stopPropagation();
+            if(selectedDropArea){ //Logic to if dropArea is tabbed/clicked first
+                if ($('#' + selectedDropArea).children('.dragItem').length > 0) {
+                    $('.dragItemsWrapper').append($('#' + selectedDropArea).children('.dragItem:first'));
+                }
+                $('#' + selectedDropArea).append($(this));
+                $(this).focus();
+                setLiveRegion($(this).text() + ' dropped to ' + $('#' + selectedDropArea).find('span.sr-only').text());
+                toggleSubmitBtn();
+                setTimeout(function() {
+                    selectedDropArea = null;
+                }, 0);
+                return;
+            }
             if ($(this).attr('aria-disabled') == 'true') {
                 clearSelection();
                 return;
@@ -24,14 +37,18 @@ $(document).ready(function () {
                 'tabindex': 0
             })
             .removeClass('disabled');
-
-            toggleSubmitBtn();
         }
     });
 
     $('.dropAreaWrapper .dropArea, .dragContainer').on('click keyup', function (e) {
         const key = e.which || e.keyCode;
-        if((key === 13 || key === 32) || e.type === "click"){
+        if((key === 13 || key === 32) || e.type === 'click'){
+            if($(this).hasClass('dropArea') && $('.dragItem[aria-disabled=true]').length === 0){
+                //Logic to if dropArea is tabbed/clicked first
+                selectedDropArea = $(this).attr('id');
+                $('.dragContainer').focus();
+                return;
+            }
             if ($('.dragItem[aria-disabled=true]')) {
                 if ($(this).children('.dragItem').length > 0) {
                     $('.dragItemsWrapper').append($(this).children('.dragItem:first'));
@@ -52,7 +69,7 @@ $(document).ready(function () {
                 });
 
                 toggleSubmitBtn();
-                setLiveRegion($('#' + selectedButton).text() + ' dropped to ' + $(this).find('span.sr-only').text());
+                selectedButton && setLiveRegion($('#' + selectedButton).text() + ' dropped to ' + $(this).find('span.sr-only').text());
 
                 selectedButton = null;
             }
@@ -69,7 +86,7 @@ $(document).ready(function () {
     });
 
     $('.dragItemsWrapper .dragItem').on('dragstart', function(event) {
-        event.originalEvent.dataTransfer.setData("text", event.target.id);
+        event.originalEvent.dataTransfer.setData('text', event.target.id);
     });
 
     $('.dropAreaWrapper .dropArea').on('dragenter', function () {
@@ -86,13 +103,13 @@ $(document).ready(function () {
 
     $('.dropAreaWrapper .dropArea, .dragContainer').on('drop', function(event) {
         event.preventDefault();
-        const data = event.originalEvent.dataTransfer.getData("text");
+        const data = event.originalEvent.dataTransfer.getData('text');
 
         if($(this).hasClass('dragContainer')) {
-            $(this).find('.dragItemsWrapper').append($("#" + data));
+            $(this).find('.dragItemsWrapper').append($('#' + data));
         }
         else {
-            $(this).append($("#" + data));
+            $(this).append($('#' + data));
             if ($(this).children('.dragItem').length > 1) {
                 $('.dragItemsWrapper').append($(this).children('.dragItem:first'));
             }
@@ -115,7 +132,11 @@ $(document).ready(function () {
     }
     
     function setLiveRegion(textToDisplay) {
-        $('#liveRegion').html(textToDisplay);
+        $('#liveRegion').text(textToDisplay);
+
+        setTimeout(function() {
+            $('#liveRegion').text('');
+        }, 2500);
     }
 
     function clearSelection() {
@@ -126,26 +147,7 @@ $(document).ready(function () {
             'tabindex': 0
         })
         .removeClass('disabled');
-    
-        document.getElementById(selectedButton).focus();
+        document.activeElement.focus();
         setLiveRegion('Cancelled grabbing ' + $('#' + selectedButton).text());
     }
 });
-
-// function resetView() {
-//     var planetsDiv = document.querySelector('div[ondrop]');
-//     for (var i = 0; i < dragButtons.length; i++) {
-//         planetsDiv.appendChild(dragButtons[i]);
-//     }
-//     setLiveRegion('Page has been Reset.');
-//     if (document.querySelector('button[aria-pressed=true]')) {
-//         for (var i = 0; i < dragButtons.length; i++) {
-//             dragButtons[i].disabled = false;
-//             dragButtons[i].setAttribute('draggable', 'true');
-//         }
-
-//         document.getElementById(selectedButton).setAttribute('aria-pressed', 'false');
-//         return;
-//     }
-
-// }
